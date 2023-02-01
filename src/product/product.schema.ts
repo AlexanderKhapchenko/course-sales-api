@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, HydratedDocument } from 'mongoose';
 
 @Schema({
   _id: true,
@@ -54,5 +54,5 @@ export class Product {
   characteristics: ProductCharacteristics[];
 }
 
-export type ProductDocument = Product & Document;
+export type ProductDocument = HydratedDocument<Product>;
 export const ProductSchema = SchemaFactory.createForClass(Product);
