@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document, HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export enum TopLevelCategory {
   Courses,
@@ -38,7 +38,7 @@ class TopPageAdvantages {
 })
 export class TopPage {
   @Prop({ enum: TopLevelCategory })
-  firstLevelCategory: TopLevelCategory;
+  firstCategory: TopLevelCategory;
 
   @Prop()
   secondCategory: string;
