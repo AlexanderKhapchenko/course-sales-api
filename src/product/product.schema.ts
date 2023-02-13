@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document, HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 @Schema({
   _id: true,
@@ -31,9 +31,6 @@ export class Product {
 
   @Prop()
   credit: number;
-
-  @Prop()
-  calculatedRating: number;
 
   @Prop()
   description: string;
