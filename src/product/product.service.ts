@@ -31,58 +31,45 @@ export class ProductService {
 
   async findWithReviews(dto: FindProductDto): Promise<FindWithReviewsResult> {
     return await this.productModel
-      .aggregate([
-        {
-          $match: {
-            categories: dto.category,
-          },
+      .aggregate()
+      .match({
+        categories: dto.category,
+      })
+      .sort({
+        _id: 1,
+      })
+      .limit(dto.limit)
+      .addFields({
+        _id: {
+          $toString: '$_id',
         },
-        {
-          $sort: {
-            _id: 1,
-          },
+      })
+      .lookup({
+        from: 'Review',
+        localField: '_id',
+        foreignField: 'productId',
+        as: 'reviews',
+      })
+      .addFields({
+        reviewCount: {
+          $size: '$reviews',
         },
-        {
-          $limit: dto.limit,
+        reviewAvg: {
+          $avg: '$reviews.rating',
         },
-        {
-          $addFields: {
-            _id: {
-              $toString: '$_id',
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'Review',
-            localField: '_id',
-            foreignField: 'productId',
-            as: 'reviews',
-          },
-        },
-        {
-          $addFields: {
-            reviewCount: {
-              $size: '$reviews',
-            },
-            reviewAvg: {
-              $avg: '$reviews.rating',
-            },
-            reviews: {
-              $function: {
-                body: `function (review) {
+        reviews: {
+          $function: {
+            body: `function (review) {
                   review.sort(
                     (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
                   );
                   return review;
                 }`,
-                args: ['$reviews'],
-                lang: 'js',
-              },
-            },
+            args: ['$reviews'],
+            lang: 'js',
           },
         },
-      ])
+      })
       .exec();
   }
 }
