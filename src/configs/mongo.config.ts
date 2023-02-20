@@ -1,9 +1,15 @@
-export const getMongoConfig = () => {
-  const login = process.env.MONGO_LOGIN;
-  const password = process.env.MONGO_PASSWORD;
-  const host = process.env.MONGO_HOST;
-  const port = process.env.MONGO_PORT;
-  const authDatabase = process.env.MONGO_AUTH_DATABASE;
+import { ConfigService } from '@nestjs/config';
+import { MongooseModuleOptions } from '@nestjs/mongoose';
 
-  return `mongodb://${login}:${password}@${host}:${port}/${authDatabase}`;
+export const getMongoConfig = async (
+  configService: ConfigService,
+): Promise<MongooseModuleOptions> => {
+  const login = configService.get('MONGO_LOGIN');
+  const password = configService.get('MONGO_PASSWORD');
+  const host = configService.get('MONGO_HOST');
+  const port = configService.get('MONGO_PORT');
+  const authDatabase = configService.get('MONGO_AUTH_DATABASE');
+  const uri = `mongodb://${login}:${password}@${host}:${port}/${authDatabase}`;
+
+  return { uri };
 };
